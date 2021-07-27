@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import { throttle } from 'lodash';
+
+const THROTTLE_WAIT = 1000;
 
 export function useInfinite() {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
 
   // 이벤트
-  const hanlder = () => {
+  const hanlder = throttle(() => {
     const { documentElement, body } = document;
 
     // 스크롤 높이
@@ -25,7 +28,7 @@ export function useInfinite() {
       setPage((page) => page + 1);
       //   fetchData();
     }
-  };
+  }, THROTTLE_WAIT);
 
   // 데이터 요청
   const fetchData = useCallback(async () => {
